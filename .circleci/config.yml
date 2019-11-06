@@ -1,8 +1,29 @@
-version: 2.1
+version: 2.18
 jobs:
   build:
+    working_directory: ~/code
     docker:
-      - image: circleci/node:4.8.2 # the primary container, where your job's commands are run
+      - image: circleci/android:api-29 # the primary container, where your job's commands are run
     steps:
       - checkout # check out the code in the project directory
+      - restore_cache:
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+#      - run:
+#         name: Chmod permissions #if permission for Gradlew Dependencies fail, use this.
+#         command: sudo chmod +x ./gradlew
+      - run:
+          name: Download Dependencies
+          command: ./gradlew androidDependencies
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run: echo "hello world" # run the `echo` command
+      - run:
+          name: Run Tests
+          command: ./gradlew lint test
+      - store_artifacts: # for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
+          path: app/build/reports
+          destination: reports
+      - store_test_results: # for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
+          path: app/build/test-resultsk
