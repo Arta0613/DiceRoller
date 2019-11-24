@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Dice Roller</string>
-    <string name="roll">Roll</string>
+    <string name="roll_dice">Roll</string>
+
+    <!-- Content Descriptions -->
+    <string name="image_of_a_dice">Image of a Dice.</string>
 </resources>
